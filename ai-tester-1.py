@@ -12,3 +12,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 from PIL import Image
 from sklearn.metrics import precision_score, recall_score, f1_score
+
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
