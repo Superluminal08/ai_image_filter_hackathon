@@ -1,0 +1,19 @@
+google extension - what language?
+on webpage start load:
+-get HTML
+-get all image URLs
+-get that image data
+-send image data to HTTP server (separate request)
+
+HTTP server:
+for each request:
+-run model to check if AI
+-send a text body HTTP response with file name and whether AI or not
+
+when recieves whether file is AI:
+
+IF AI:
+remove that image from HTML before loading (potentially replace image with different?)
+
+if not AI:
+ignore image
