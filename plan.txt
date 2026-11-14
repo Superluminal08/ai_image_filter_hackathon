@@ -1,4 +1,4 @@
-google extension - what language?
+google extension - uses javascript
 on webpage start load:
 -get HTML
 -get all image URLs
