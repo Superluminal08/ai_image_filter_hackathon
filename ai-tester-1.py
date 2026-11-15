@@ -90,7 +90,7 @@ transform = transforms.Compose([
 ])
 
 class_list = ["FAKE", "REAL"]
-image_list , label_list = GetRandomDataset(LoadDataset(), 1000)
+image_list , label_list = GetRandomDataset(LoadDataset(), 100)
 
 df = pd.DataFrame()
 df["image"] = image_list
@@ -107,7 +107,7 @@ test_transforms = transforms.Compose([transforms.Resize((image_size, image_size)
                                       transforms.ToTensor(),
                                       transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
-batch_size = 15
+batch_size = 10
 train_data_object = TrainingData(train_df, class_list, training_transform)
 
 test_data_object = TrainingData(test_df, class_list, test_transforms)
