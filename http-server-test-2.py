@@ -1,3 +1,4 @@
+print ("Starting server...")
 import socketserver
 from http.server import SimpleHTTPRequestHandler
 import torch
@@ -51,6 +52,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         # 2. Read the request body bytes from rfile
         request_body = self.rfile.read(content_length)
         decision = Check(request_body)
+        print (decision)
         print (f"checking: {request_body} \t Decision: {decision}")
         
         # 3. Send response status and headers
@@ -59,7 +61,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         
         # 4. Echo the request body back to the client
-        self.wfile.write(request_body)
+        self.wfile.write(decision.encode("utf-8"))
 
 
 ##image checking stuff
@@ -115,7 +117,7 @@ def Check(url):
         response.raise_for_status()  # Check for HTTP errors
     except:
         print (f"failed to load image at: {url}")
-        return False
+        return "FAIL"
 
 
     img = Image.open(BytesIO(response.content))

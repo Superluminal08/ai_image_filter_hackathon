@@ -17,7 +17,7 @@ async function Get2() {
     let text = await response.text();
     console.log("Response data:", text);
   } catch (error) {
-    console.error("Fetch failed:", error);
+    console.log("Fetch failed:", error);
   }
 }
 async function GetFromURL(url = "https://img.magnific.com/free-photo/closeup-shot-beautiful-butterfly-orange-petaled-flower_181624-13884.jpg?semt=ais_hybrid&w=740&q=80") {
