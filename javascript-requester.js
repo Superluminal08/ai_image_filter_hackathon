@@ -23,7 +23,7 @@ async function Get2() {
 async function GetFromURL(url = "https://img.magnific.com/free-photo/closeup-shot-beautiful-butterfly-orange-petaled-flower_181624-13884.jpg?semt=ais_hybrid&w=740&q=80") {
   console.log("fetching...");
   try {
-    let response = await fetch("http://188.220.221.17:8080", {
+    let response = await fetch("https://188.220.221.17:8080", {
       method: "POST", // Specify the method (POST, PUT, etc.)
       headers: {
         "Content-Type": "text/plain" // Tell the server you are sending plain text

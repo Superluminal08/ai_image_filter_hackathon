@@ -17,6 +17,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 import os
 import requests
 from io import BytesIO
+import ssl
 
 #http handler
 class MyHandler(SimpleHTTPRequestHandler):
@@ -47,6 +48,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.wfile.write((f"Get request response").encode("utf-8"))
     def do_POST(self):
         # 1. Get the content length to know how many bytes to read
+        print ("recieved post request")
         content_length = int(self.headers.get('Content-Length', 0))
         
         # 2. Read the request body bytes from rfile
@@ -139,5 +141,10 @@ def Check(url):
 if __name__ == '__main__':
     PORT = 8080
     with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
-        print(f"Server running at http://localhost:{PORT}")
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(certfile="server.pem", keyfile = "key.pem")
+        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+
+        print(f"Server running at https://188.220.221.17:{PORT}")
+        print (httpd.server_address)
         httpd.serve_forever()

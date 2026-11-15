@@ -32,10 +32,21 @@ def LoadDataset():
 def GetRandomDataset(dataset, size): ##recieves dataset of labels and images as tuple
     labels = []
     images = []
+    real = 0
+    fake = 0
     for i in range(size):
         index = random.randint(0, len(dataset[0]))
-        labels.append(dataset[1][index])
+        while (real >= int(0.5 * size)and dataset[1][index] == "REAL") or (fake >= int(0.5 * size) and dataset[1][index] == "FAKE"):
+            index = random.randint(0, len(dataset[0]))
+        label = dataset[1][index]
+        if label =="FAKE":
+            fake += 1
+        else:
+            real += 1
+        labels.append(label)
         images.append(dataset[0][index])
+        
+    print ("random dataset has", labels.count("REAL"), "and", labels.count("FAKE"), "fake")
     return (images, labels)
 
 class TrainingData(Dataset):
@@ -90,7 +101,7 @@ transform = transforms.Compose([
 ])
 
 class_list = ["FAKE", "REAL"]
-image_list , label_list = GetRandomDataset(LoadDataset(), 100)
+image_list , label_list = GetRandomDataset(LoadDataset(), 2000)
 
 df = pd.DataFrame()
 df["image"] = image_list
@@ -102,12 +113,13 @@ train_df, test_df = train_test_split(df, test_size=test_ratio, stratify=df["labe
 image_size = 32
 training_transform = transforms.Compose([transforms.Resize((image_size, image_size)), 
                                          transforms.RandomRotation(10),
-                                         transforms.ToTensor()])
+                                         transforms.ToTensor(),
+                                         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 test_transforms = transforms.Compose([transforms.Resize((image_size, image_size)),
-                                      transforms.ToTensor(),
-                                      transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+                                      transforms.ToTensor()
+                                      ])##transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
-batch_size = 10
+batch_size = 30
 train_data_object = TrainingData(train_df, class_list, training_transform)
 
 test_data_object = TrainingData(test_df, class_list, test_transforms)
@@ -205,9 +217,9 @@ for epoch in range(epochs):
     early_stopping.load_best_model(model)
     #metrics
     accuracy = 100 * sum(np.array(all_predictions) == np.array(all_labels)) / len(all_labels)
-    precision = precision_score(all_labels, all_predictions, average="weighted")
-    recall = recall_score(all_labels, all_predictions, average="weighted")
-    f1 = f1_score(all_labels, all_predictions, average="weighted")
+    precision = precision_score(all_labels, all_predictions, average="weighted", zero_division=True)
+    recall = recall_score(all_labels, all_predictions, average="weighted", zero_division=True)
+    f1 = f1_score(all_labels, all_predictions, average="weighted", zero_division=True)
     print (f"Epoch [{epoch+1}/{epochs}]")
     print (f"Test Accuracy: {accuracy:.2f}%")
     print (f"Precision: {precision:.4f}")
